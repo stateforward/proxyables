@@ -28,3 +28,4 @@ python3 parity/run.py --allow-unsupported
 - Agents communicate readiness and scenario results over stdout as JSONL.
 - The runner uses real TCP loopback sockets for the data plane.
 - Protocol mismatches and missing capabilities are reported explicitly per pair and scenario.
+- The agent protocol aligns with the shared constants and behaviors in [DSL.md](../DSL.md).

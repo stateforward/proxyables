@@ -14,6 +14,8 @@ A family of libraries for **exported** and **imported** proxyable objects over m
 
 Each subdirectory is its own repository (git submodule). Use the language-specific README in that folder for install commands, examples, and API details.
 
+Cross-language protocol contracts are documented in [DSL.md](DSL.md).
+
 ## Repository structure
 
 This monorepo uses git submodules. Clone with submodules so every implementation is present:
@@ -45,6 +47,17 @@ git submodule update --init --recursive
 ```
 
 Then open the implementation you need; build and test instructions live in each submodule.
+
+For repository-level parity checks:
+
+```sh
+python3 parity/run.py
+```
+
+- `--langs` controls the active language set (defaults to `ts,py,go,rs,zig`).
+- `--pairs` restricts client/server combinations (e.g. `ts:go,go:ts`).
+- `--scenarios` limits matrix scenarios (from `parity/scenarios.json`).
+- `--allow-unsupported` marks unsupported pairs instead of failing the run.
 
 ## License
 
