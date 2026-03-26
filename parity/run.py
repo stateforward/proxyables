@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import argparse
+import re
 import json
 import os
 import signal
@@ -18,6 +19,30 @@ ROOT = Path(__file__).resolve().parent.parent
 SCENARIO_FILE = ROOT / "parity" / "scenarios.json"
 RESULTS_ROOT = ROOT / "parity" / "results"
 GO_BIN = "/opt/homebrew/Cellar/go/1.24.5/bin/go"
+
+
+WORD_BOUNDARY = re.compile(r"[A-Z]?[a-z0-9]+|[A-Z]+(?![a-z])")
+
+
+def to_pascal_case(value: str) -> str:
+    parts = WORD_BOUNDARY.findall(value)
+    if not parts:
+        return "".join(
+            segment.capitalize()
+            for segment in re.split(r"[^a-zA-Z0-9]+", value)
+            if segment
+        )
+    return "".join(part[:1].upper() + part[1:].lower() for part in parts)
+
+
+def canonicalize_scenario(raw: str, canonical_names: set[str]) -> str:
+    if not raw:
+        return ""
+    candidates = {raw, raw.strip(), to_pascal_case(raw), to_pascal_case(raw.strip())}
+    for candidate in candidates:
+        if candidate in canonical_names:
+            return candidate
+    return ""
 @dataclass
 class LanguageConfig:
     name: str
@@ -89,6 +114,10 @@ def scenario_map(manifest: dict[str, Any]) -> dict[str, dict[str, Any]]:
     return {item["name"]: item for item in manifest["scenarios"]}
 
 
+def canonical_scenarios(manifest: dict[str, Any]) -> list[str]:
+    return [item["name"] for item in manifest["scenarios"]]
+
+
 def selected_languages(raw: str) -> list[str]:
     langs = [item.strip() for item in raw.split(",") if item.strip()]
     for lang in langs:
@@ -111,14 +140,21 @@ def selected_pairs(langs: list[str], raw: str) -> list[tuple[str, str]]:
 
 
 def selected_scenarios(manifest: dict[str, Any], raw: str) -> list[str]:
-    names = [item["name"] for item in manifest["scenarios"]]
+    canonical_names = canonical_scenarios(manifest)
+    canonical_set = set(canonical_names)
     if not raw:
-        return names
+        return canonical_names
     selected = [item.strip() for item in raw.split(",") if item.strip()]
-    unknown = set(selected) - set(names)
+    canonicalized = [canonicalize_scenario(name, canonical_set) for name in selected]
+    unknown = {
+        raw
+        for raw, canonical in zip(selected, canonicalized)
+        if not canonical
+    }
     if unknown:
         raise SystemExit(f"unknown scenarios: {', '.join(sorted(unknown))}")
-    return selected
+    # Preserve manifest ordering from canonical list so matrix output is stable.
+    return canonicalized
 
 
 def merged_env(extra: dict[str, str] | None) -> dict[str, str]:
@@ -185,33 +221,33 @@ def parse_drive_output(raw: str) -> list[dict[str, Any]]:
 
 
 def expected_actual(scenario: str) -> Any:
-    if scenario == "get_scalars":
+    if scenario == "GetScalars":
         return {
             "intValue": 42,
             "boolValue": True,
             "stringValue": "hello",
             "nullValue": None,
         }
-    if scenario == "call_add":
+    if scenario == "CallAdd":
         return 42
-    if scenario == "nested_object_access":
+    if scenario == "NestedObjectAccess":
         return {"label": "nested", "pong": "pong"}
-    if scenario == "construct_greeter":
+    if scenario == "ConstructGreeter":
         return "Hello World"
-    if scenario == "callback_roundtrip":
+    if scenario == "CallbackRoundtrip":
         return "callback:value"
-    if scenario == "object_argument_roundtrip":
+    if scenario == "ObjectArgumentRoundtrip":
         return "helper:Ada"
-    if scenario == "error_propagation":
+    if scenario == "ErrorPropagation":
         return "Boom"
-    if scenario == "shared_reference_consistency":
+    if scenario == "SharedReferenceConsistency":
         return {
             "firstKind": "shared",
             "secondKind": "shared",
             "firstValue": "shared",
             "secondValue": "shared",
         }
-    if scenario == "explicit_release":
+    if scenario == "ExplicitRelease":
         return {
             "before": 0,
             "after": 0,
@@ -224,6 +260,7 @@ def main() -> int:
     args = parse_args()
     manifest = load_manifest()
     scenarios_by_name = scenario_map(manifest)
+    canonical = set(scenarios_by_name.keys())
     langs = selected_languages(args.langs)
     pairs = selected_pairs(langs, args.pairs)
     scenarios = selected_scenarios(manifest, args.scenarios)
@@ -316,9 +353,9 @@ def main() -> int:
 
             client_results = parse_drive_output(drive.stdout)
             result_by_name = {
-                item["scenario"]: item
+                canonicalize_scenario(item["scenario"], canonical): item
                 for item in client_results
-                if item.get("type") == "scenario"
+                if item.get("type") == "scenario" and canonicalize_scenario(item.get("scenario", ""), canonical)
             }
 
             for scenario in scenarios:

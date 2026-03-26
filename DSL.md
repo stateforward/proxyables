@@ -69,6 +69,8 @@ proxy may send a `reference` value or `release` instruction to coordinate lifecy
 - Parity harness protocol label: `parity-json-v1`.
 - Scenario coverage includes scalar access, method calls, construction, callbacks, error round-trips,
   reference consistency, and explicit release.
+- Canonical scenario identifiers are PascalCase (for example: `GetScalars`, `CallAdd`), and harness agents
+  accept legacy aliases such as `get_scalars` and `getScalars` for compatibility.
 - The canonical tests check instruction/constant shape and these scenarios from each language pair.
 - See `parity/run.py` and `parity/scenarios.json` for the full matrix.
 
