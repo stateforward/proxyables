@@ -18,7 +18,19 @@ from typing import Any
 ROOT = Path(__file__).resolve().parent.parent
 SCENARIO_FILE = ROOT / "parity" / "scenarios.json"
 RESULTS_ROOT = ROOT / "parity" / "results"
-GO_BIN = "/opt/homebrew/Cellar/go/1.24.5/bin/go"
+
+
+def resolve_go_bin() -> str:
+    configured = os.environ.get("GO_BIN")
+    if configured:
+        return configured
+    local = Path("/opt/homebrew/Cellar/go/1.24.5/bin/go")
+    if local.exists():
+        return str(local)
+    return "go"
+
+
+GO_BIN = resolve_go_bin()
 
 
 WORD_BOUNDARY = re.compile(r"[A-Z]?[a-z0-9]+|[A-Z]+(?![a-z])")
@@ -59,7 +71,7 @@ LANGUAGES: dict[str, LanguageConfig] = {
         workdir=ROOT / "proxyables.ts",
         prepare=[["npm", "run", "build"]],
         serve=["node", "parity/agent.js", "serve"],
-        drive=["node", "parity/agent.js", "drive"],
+        drive=["node", "--expose-gc", "parity/agent.js", "drive"],
     ),
     "py": LanguageConfig(
         name="py",
@@ -98,6 +110,10 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--langs", default="ts,py,go,rs,zig")
     parser.add_argument("--pairs", default="")
     parser.add_argument("--scenarios", default="")
+    parser.add_argument("--profile", choices=("functional", "release"), default="functional")
+    parser.add_argument("--gc-tier-a-langs", default="ts,py,go")
+    parser.add_argument("--soak-iterations", type=int, default=32)
+    parser.add_argument("--cleanup-timeout", type=float, default=5.0)
     parser.add_argument("--allow-unsupported", action="store_true")
     parser.add_argument("--keep-artifacts", action="store_true")
     parser.add_argument("--json", action="store_true")
@@ -139,8 +155,12 @@ def selected_pairs(langs: list[str], raw: str) -> list[tuple[str, str]]:
     return pairs
 
 
-def selected_scenarios(manifest: dict[str, Any], raw: str) -> list[str]:
-    canonical_names = canonical_scenarios(manifest)
+def selected_scenarios(manifest: dict[str, Any], raw: str, profile: str) -> list[str]:
+    canonical_names = [
+        item["name"]
+        for item in manifest["scenarios"]
+        if profile in item.get("profiles", ["functional", "release"])
+    ]
     canonical_set = set(canonical_names)
     if not raw:
         return canonical_names
@@ -220,7 +240,7 @@ def parse_drive_output(raw: str) -> list[dict[str, Any]]:
     return items
 
 
-def expected_actual(scenario: str) -> Any:
+def expected_actual(scenario: str, soak_iterations: int) -> Any:
     if scenario == "GetScalars":
         return {
             "intValue": 42,
@@ -253,6 +273,110 @@ def expected_actual(scenario: str) -> Any:
             "after": 0,
             "acquired": 2,
         }
+    if scenario == "AliasRetainRelease":
+        return {
+            "baseline": 0,
+            "final": 0,
+            "released": True,
+        }
+    if scenario == "UseAfterRelease":
+        return {
+            "baseline": 0,
+            "final": 0,
+            "released": True,
+        }
+    if scenario == "SessionCloseCleanup":
+        return {
+            "baseline": 0,
+            "final": 0,
+            "cleaned": True,
+        }
+    if scenario == "ErrorPathNoLeak":
+        return {
+            "baseline": 0,
+            "final": 0,
+            "error": "Boom",
+            "cleaned": True,
+        }
+    if scenario == "ReferenceChurnSoak":
+        return {
+            "baseline": 0,
+            "final": 0,
+            "iterations": soak_iterations,
+            "stable": True,
+        }
+    if scenario == "AutomaticReleaseAfterDrop":
+        return {
+            "baseline": 0,
+            "final": 0,
+            "released": True,
+            "eventual": True,
+        }
+    if scenario == "CallbackReferenceCleanup":
+        return {
+            "baseline": 0,
+            "final": 0,
+            "released": True,
+        }
+    if scenario == "FinalizerEventualCleanup":
+        return {
+            "baseline": 0,
+            "final": 0,
+            "released": True,
+            "eventual": True,
+        }
+    return None
+
+
+def validate_actual(scenario: str, actual: Any, expected: Any) -> str | None:
+    if expected is None:
+        return None
+    if scenario in {
+        "GetScalars",
+        "CallAdd",
+        "NestedObjectAccess",
+        "ConstructGreeter",
+        "CallbackRoundtrip",
+        "ObjectArgumentRoundtrip",
+        "ErrorPropagation",
+        "SharedReferenceConsistency",
+        "ExplicitRelease",
+    }:
+        if actual != expected:
+            return "actual did not match expected"
+        return None
+    if not isinstance(actual, dict):
+        return "actual did not return an object payload"
+    for key, value in expected.items():
+        if actual.get(key) != value:
+            return f"field {key} did not match expected"
+    if scenario == "ReferenceChurnSoak":
+        peak = actual.get("peak")
+        iterations = actual.get("iterations")
+        if not isinstance(peak, int) or not isinstance(iterations, int):
+            return "peak/iterations were not numeric"
+        if peak < iterations:
+            return "peak was lower than iterations"
+        return None
+    if scenario in {"AutomaticReleaseAfterDrop", "FinalizerEventualCleanup"}:
+        peak = actual.get("peak")
+        if not isinstance(peak, int) or peak < 1:
+            return "peak did not reflect an acquired remote reference"
+        return None
+    if scenario == "CallbackReferenceCleanup":
+        peak = actual.get("peak")
+        if not isinstance(peak, int) or peak < 1:
+            return "peak did not reflect callback/object temp references"
+        return None
+    if scenario in {"AliasRetainRelease", "UseAfterRelease", "SessionCloseCleanup", "ErrorPathNoLeak"}:
+        peak = actual.get("peak")
+        if not isinstance(peak, int) or peak < 1:
+            return "peak did not reflect any retained references"
+        if scenario == "AliasRetainRelease":
+            after_first = actual.get("afterFirstRelease")
+            if not isinstance(after_first, int) or after_first < 0 or after_first > peak:
+                return "afterFirstRelease was not a valid retained count"
+        return None
     return None
 
 
@@ -262,8 +386,9 @@ def main() -> int:
     scenarios_by_name = scenario_map(manifest)
     canonical = set(scenarios_by_name.keys())
     langs = selected_languages(args.langs)
+    gc_tier_a_langs = set(selected_languages(args.gc_tier_a_langs))
     pairs = selected_pairs(langs, args.pairs)
-    scenarios = selected_scenarios(manifest, args.scenarios)
+    scenarios = selected_scenarios(manifest, args.scenarios, args.profile)
 
     RESULTS_ROOT.mkdir(parents=True, exist_ok=True)
     run_dir = RESULTS_ROOT / timestamp()
@@ -312,6 +437,12 @@ def main() -> int:
                 server_lang,
                 "--scenarios",
                 ",".join(scenarios),
+                "--profile",
+                args.profile,
+                "--soak-iterations",
+                str(args.soak_iterations),
+                "--cleanup-timeout",
+                str(args.cleanup_timeout),
             ]
             try:
                 drive = subprocess.run(
@@ -360,7 +491,10 @@ def main() -> int:
 
             for scenario in scenarios:
                 manifest_item = scenarios_by_name[scenario]
+                gc_tier_a_only = bool(manifest_item.get("gc_tier_a_only", False))
                 required = bool(manifest_item.get("required", False))
+                if gc_tier_a_only and client_lang not in gc_tier_a_langs:
+                    required = False
                 payload = result_by_name.get(scenario)
                 if payload is None:
                     status = "failed"
@@ -368,13 +502,14 @@ def main() -> int:
                 else:
                     status = payload.get("status", "failed")
                     details = payload
-                    expected = expected_actual(scenario)
+                    expected = expected_actual(scenario, args.soak_iterations)
                     actual = payload.get("actual")
-                    if status == "passed" and expected is not None and actual != expected:
+                    mismatch = validate_actual(scenario, actual, expected) if status == "passed" else None
+                    if mismatch is not None:
                         status = "failed"
                         details = {
                             **payload,
-                            "message": "actual did not match expected",
+                            "message": mismatch,
                             "expected": expected,
                         }
 
@@ -388,6 +523,8 @@ def main() -> int:
                     supported = False
 
                 if status == "unsupported" and args.allow_unsupported:
+                    final_status = "skipped"
+                elif status == "unsupported" and gc_tier_a_only and client_lang not in gc_tier_a_langs:
                     final_status = "skipped"
                 elif status == "unsupported" and not required:
                     final_status = "skipped"
@@ -419,6 +556,10 @@ def main() -> int:
 
     summary = {
         "run_dir": str(run_dir),
+        "profile": args.profile,
+        "gc_tier_a_langs": sorted(gc_tier_a_langs),
+        "soak_iterations": args.soak_iterations,
+        "cleanup_timeout": args.cleanup_timeout,
         "results": results,
     }
     (run_dir / "summary.json").write_text(json.dumps(summary, indent=2), encoding="utf-8")

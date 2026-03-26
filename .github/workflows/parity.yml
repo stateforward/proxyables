@@ -1,0 +1,92 @@
+name: Parity
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+  schedule:
+    - cron: "0 6 * * *"
+  workflow_dispatch:
+
+jobs:
+  parity-pr:
+    if: github.event_name != 'schedule'
+    runs-on: ubuntu-latest
+    env:
+      GO_BIN: go
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.24.5"
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - uses: mlugg/setup-zig@v1
+        with:
+          version: "0.13.0"
+
+      - name: Functional matrix
+        run: python3 parity/run.py --profile functional --timeout 60
+
+      - name: Release slice
+        run: >
+          python3 parity/run.py --profile release --timeout 60
+          --pairs ts:ts,py:py,go:go,rs:rs,zig:zig,ts:py,py:go,go:rs,rs:zig,zig:ts
+
+      - name: Upload parity artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: parity-pr-results
+          path: parity/results
+
+  parity-nightly:
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    env:
+      GO_BIN: go
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.24.5"
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - uses: mlugg/setup-zig@v1
+        with:
+          version: "0.13.0"
+
+      - name: Full release matrix
+        run: python3 parity/run.py --profile release --timeout 60
+
+      - name: Upload parity artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: parity-nightly-results
+          path: parity/results

@@ -54,12 +54,20 @@ For repository-level parity checks:
 python3 parity/run.py
 ```
 
+For the full release profile, including lifecycle and tier-A GC validation:
+
+```sh
+python3 parity/run.py --profile release
+```
+
 - `--langs` controls the active language set (defaults to `ts,py,go,rs,zig`).
 - `--pairs` restricts client/server combinations (e.g. `ts:go,go:ts`).
 - `--scenarios` limits matrix scenarios (from `parity/scenarios.json`).
+- `--profile` switches between the functional baseline and the full release gate.
 - `--allow-unsupported` marks unsupported pairs instead of failing the run.
 
 The parity harness is now full end-to-end transport parity: each client/server pair is exercised over the real Yamux + MessagePack path, not an in-process or fake transport mode.
+The release profile also validates lifecycle behavior against real runtime registry state, including explicit release and tier-A (`ts`, `py`, `go`) GC/finalizer cleanup.
 
 ## Small examples (all 5 languages)
 
@@ -149,12 +157,13 @@ const cursor = try proxyables.ImportFrom(.{ .allocator = allocator, .session = s
 
 ## Parity matrix results
 
-Latest captured run: `parity/results/20260326-114225` (`parity-json-v1`)
+Latest full release run: `parity/results/20260326-133924`
 
-- Total: `225` checks (`5` languages × `25` client/server pairs × `9` scenarios)
-- Passed: `225`
+- Total: `425` checks
+- Passed: `425`
 - Failed: `0`
-- Required scenarios: `225`
+- Scope: `25` client/server pairs across `17` release-profile scenarios
+- Includes: real transport parity, lifecycle parity, explicit release, and tier-A GC/finalizer cleanup
 
 | Client → Server | ts | py | go | rs | zig |
 |-----------------|----|----|----|----|-----|
@@ -164,7 +173,7 @@ Latest captured run: `parity/results/20260326-114225` (`parity-json-v1`)
 | rs              | ✅ | ✅ | ✅ | ✅ | ✅ |
 | zig             | ✅ | ✅ | ✅ | ✅ | ✅ |
 
-All supported scenarios are currently green.
+Both the functional and release profiles are currently green.
 
 ## License
 

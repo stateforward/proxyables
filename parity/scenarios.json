@@ -2,49 +2,109 @@
   "protocol_version": 1,
   "scenarios": [
     {
-    "name": "GetScalars",
+      "name": "GetScalars",
       "required": true,
+      "profiles": ["functional", "release"],
       "description": "Read canonical scalar properties from the remote root object."
     },
     {
-    "name": "CallAdd",
+      "name": "CallAdd",
       "required": true,
+      "profiles": ["functional", "release"],
       "description": "Invoke the canonical add method and verify the numeric result."
     },
     {
-    "name": "NestedObjectAccess",
+      "name": "NestedObjectAccess",
       "required": true,
+      "profiles": ["functional", "release"],
       "description": "Read nested object state and call a nested method."
     },
     {
-    "name": "ConstructGreeter",
+      "name": "ConstructGreeter",
       "required": true,
+      "profiles": ["functional", "release"],
       "description": "Construct the canonical Greeter target and call greet."
     },
     {
-    "name": "CallbackRoundtrip",
+      "name": "CallbackRoundtrip",
       "required": true,
+      "profiles": ["functional", "release"],
       "description": "Pass a callback to the server and verify the callback result round-trips."
     },
     {
-    "name": "ObjectArgumentRoundtrip",
+      "name": "ObjectArgumentRoundtrip",
       "required": true,
+      "profiles": ["functional", "release"],
       "description": "Pass an object with behavior to the server and verify the server can call back into it."
     },
     {
-    "name": "ErrorPropagation",
+      "name": "ErrorPropagation",
       "required": true,
+      "profiles": ["functional", "release"],
       "description": "Trigger a remote error and verify the canonical Boom message."
     },
     {
-    "name": "SharedReferenceConsistency",
+      "name": "SharedReferenceConsistency",
       "required": true,
+      "profiles": ["functional", "release"],
       "description": "Fetch the shared remote object multiple times and verify stable behavior."
     },
     {
-    "name": "ExplicitRelease",
+      "name": "ExplicitRelease",
       "required": true,
+      "profiles": ["functional", "release"],
       "description": "Verify explicit remote release semantics deterministically."
+    },
+    {
+      "name": "AliasRetainRelease",
+      "required": true,
+      "profiles": ["release"],
+      "description": "Acquire the same shared reference twice, release aliases independently, and verify refcount semantics."
+    },
+    {
+      "name": "UseAfterRelease",
+      "required": true,
+      "profiles": ["release"],
+      "description": "Release a reference and verify later use fails with a stable released error."
+    },
+    {
+      "name": "SessionCloseCleanup",
+      "required": true,
+      "profiles": ["release"],
+      "description": "Verify temporary references return to baseline when session-scoped work is cleaned up."
+    },
+    {
+      "name": "ErrorPathNoLeak",
+      "required": true,
+      "profiles": ["release"],
+      "description": "Verify temporary references are cleaned up after an error path."
+    },
+    {
+      "name": "ReferenceChurnSoak",
+      "required": true,
+      "profiles": ["release"],
+      "description": "Create and release many references and verify the registry returns to baseline."
+    },
+    {
+      "name": "AutomaticReleaseAfterDrop",
+      "required": true,
+      "profiles": ["release"],
+      "gc_tier_a_only": true,
+      "description": "Drop the last imported proxy, force GC, and verify eventual remote cleanup."
+    },
+    {
+      "name": "CallbackReferenceCleanup",
+      "required": true,
+      "profiles": ["release"],
+      "gc_tier_a_only": true,
+      "description": "Verify callback/object-argument temporary references are released after forced GC."
+    },
+    {
+      "name": "FinalizerEventualCleanup",
+      "required": true,
+      "profiles": ["release"],
+      "gc_tier_a_only": true,
+      "description": "Verify finalizer-driven cleanup completes within a bounded eventual window."
     }
   ]
 }
