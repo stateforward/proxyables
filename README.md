@@ -59,6 +59,76 @@ python3 parity/run.py
 - `--scenarios` limits matrix scenarios (from `parity/scenarios.json`).
 - `--allow-unsupported` marks unsupported pairs instead of failing the run.
 
+## Small examples (all 5 languages)
+
+### TypeScript
+
+```ts
+import { createExportedProxyable, createImportedProxyable } from "proxyables";
+
+const exported = createExportedProxyable({ object: { echo: (msg: string) => `echo ${msg}` }, stream });
+const proxy = createImportedProxyable({ stream });
+
+await Promise.all([proxy.echo("hello"), proxy.compute(10, 20)]);
+```
+
+### Python
+
+```python
+from proxyables import Proxyable
+
+class API:
+    async def echo(self, msg: str) -> str:
+        return f"echo {msg}"
+
+    async def compute(self, a: int, b: int) -> int:
+        return a + b
+
+exported = await Proxyable.export(API(), stream)
+proxy = await Proxyable.import_from(stream)
+await proxy.echo("hello")
+await proxy.compute(10, 20)
+```
+
+### Go
+
+```go
+exported, _ := proxyables.Export(conn, &API{}, nil)
+imported, _ := proxyables.ImportFrom(conn, nil)
+
+result, _ := imported.Root().Get("Echo").Apply("hello").Exec(ctx)
+_ = result // "echo hello"
+```
+
+### Rust
+
+```rust
+#[proxyable]
+struct API;
+
+impl API {
+    async fn echo(&self, msg: String) -> String { format!("echo {msg}") }
+    async fn compute(&self, a: i64, b: i64) -> i64 { a + b }
+}
+
+let (imported, driver) = Proxyable::import_from(stream);
+tokio::spawn(driver);
+let api = ApiProxy::new(imported);
+let _ = api.echo("hello".into()).await;
+```
+
+### Zig
+
+```zig
+const API = struct {
+    pub fn echo(self: *@This(), msg: []const u8) []const u8 { return msg; }
+    pub fn compute(self: *@This(), a: i64, b: i64) i64 { return a + b; }
+};
+
+const exported = try proxyables.Proxyable.export(.{ .allocator = allocator, .session = session, .root = api.proxyTarget() });
+const cursor = try proxyables.Proxyable.import_from(.{ .allocator = allocator, .session = session });
+```
+
 ## Parity matrix results
 
 Latest captured run: `parity/results/20260325-234929` (`parity-json-v1`)
