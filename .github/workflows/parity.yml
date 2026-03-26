@@ -46,6 +46,18 @@ jobs:
           python3 parity/run.py --profile release --timeout 60
           --pairs ts:ts,py:py,go:go,rs:rs,zig:zig,ts:py,py:go,go:rs,rs:zig,zig:ts
 
+      - name: Stress slice
+        run: >
+          python3 parity/run.py --profile stress --timeout 60
+          --pairs ts:py,py:go,go:rs,rs:zig,zig:ts
+          --payload-bytes 16384
+          --concurrency 4
+
+      - name: Multihop slice
+        run: >
+          python3 parity/run.py --profile multihop --timeout 90
+          --chains go:py:ts:rs
+
       - name: Upload parity artifacts
         if: always()
         uses: actions/upload-artifact@v4
@@ -83,6 +95,16 @@ jobs:
 
       - name: Full release matrix
         run: python3 parity/run.py --profile release --timeout 60
+
+      - name: Full stress matrix
+        run: >
+          python3 parity/run.py --profile stress --timeout 60
+          --payload-bytes 65536
+          --concurrency 8
+          --stress-iterations 256
+
+      - name: Full multihop matrix
+        run: python3 parity/run.py --profile multihop --timeout 90
 
       - name: Upload parity artifacts
         if: always()

@@ -1,8 +1,8 @@
 # proxyables
 
-**Remote objects that feel local. No schemas. No codegen. No stubs.**
+**Remote objects that behave like local ones. No schemas, codegen, or stubs.**
 
-Proxyables is not another RPC framework. RPC makes you think in endpoints and messages — define a schema, generate stubs, serialize requests, deserialize responses, repeat for every language. Proxyables makes the network disappear. You export an object in one process, and it shows up as a native object in another — with property access, method calls, construction, and callbacks working transparently across language boundaries.
+Proxyables is a cross-language object RPC system. Instead of designing endpoints and generating clients, you export an object in one process and interact with it from another process using normal object operations: property reads, method calls, construction, and callbacks.
 
 ```python
 # Python process — export a real object
@@ -17,21 +17,21 @@ await calc.history[0];                        // reads a nested property
 const session = await new calc.Session();     // constructs a remote instance
 ```
 
-No `.proto` files. No OpenAPI specs. No generated clients. The proxy *is* the API.
+If the shape of the API already lives in code, Proxyables lets you use that shape directly.
 
 ## What makes this different
 
 ### Objects, not endpoints
 
-Traditional RPC maps every operation to a named endpoint. Proxyables maps operations to *object interactions* — get a property, call a method, construct an instance, access a nested child. The remote object graph is yours to navigate, just like local code.
+Traditional RPC maps work to named endpoints. Proxyables maps work to object interactions: get a property, call a method, construct an instance, or follow a nested child object. The remote object graph is navigated the same way you would navigate a local one.
 
 ### Bidirectional by default
 
-There is no client. There is no server. Both sides export and import objects over the same connection. A TypeScript process can call into Go while Go simultaneously calls back into TypeScript — over a single multiplexed stream.
+Both sides can export and import objects over the same connection. A TypeScript process can call into Go while Go calls back into TypeScript over the same multiplexed transport.
 
 ### Callbacks that cross language boundaries
 
-Pass a function from Python to Rust. Rust calls it — the function executes in Python and the result flows back. This works because functions and objects passed as arguments are automatically registered as proxies on the other side.
+Pass a function from Python to Rust. Rust can call it, the function runs in Python, and the result comes back through the same connection. Functions and objects passed as arguments are automatically registered as references on the other side.
 
 ```go
 // Go exports an object that accepts a callback
@@ -49,11 +49,11 @@ result = await proxy.Transform("hello", lambda s: s.upper())
 
 ### Distributed garbage collection
 
-Remote references are reference-counted and cleaned up automatically. In GC-capable languages (TypeScript, Python, Go), dropping a proxy triggers a finalizer that sends a `release` instruction to the exporter. No manual lifecycle management. No leaked resources.
+Remote references are reference-counted and cleaned up automatically. In GC-capable languages (TypeScript, Python, Go), dropping a proxy triggers a finalizer that sends a `release` instruction back to the exporter.
 
 ### One wire protocol, five languages
 
-Every implementation encodes the same instructions, the same value types, the same reference lifecycle — down to the byte. This isn't "theoretically compatible." It's proven by a **625-check parity matrix** that runs on every commit: 25 client/server pairs across 25 scenarios including callbacks, error propagation, concurrent fan-out, GC cleanup, abrupt disconnects, and large payload fidelity.
+Every implementation uses the same instruction vocabulary, value types, and reference lifecycle on the wire. That compatibility is checked continuously by a **600-check release matrix** plus a **65-check curated multihop matrix**: direct 25 client/server pairs across 24 release scenarios, and real chained transports like `go -> py -> ts -> rs` over the same Yamux + MessagePack path. The nightly stress profile adds slow-consumer and backpressure coverage on top.
 
 ## Language support
 
@@ -102,7 +102,9 @@ Build and test instructions live in each submodule's README. To run the cross-la
 
 ```sh
 python3 parity/run.py                          # functional baseline (9 core scenarios)
-python3 parity/run.py --profile release         # full release gate (25 scenarios)
+python3 parity/run.py --profile release         # full release gate (24 scenarios, 25x24 matrix)
+python3 parity/run.py --profile multihop        # curated 4-language transport chains
+python3 parity/run.py --profile stress          # stress profile (payload/backpressure)
 python3 parity/run.py --langs ts,py --pairs ts:py,py:ts  # specific pairs
 ```
 
@@ -128,7 +130,9 @@ Every commit is validated against a cross-language test matrix. The release prof
 - Reference lifecycle: explicit release, alias retain/release, use-after-release
 - GC-driven cleanup: automatic release after drop, finalizer eventual cleanup
 - Stress: concurrent shared references, concurrent callback fan-out, release/use races
-- Transport edge cases: abrupt disconnect cleanup, server abort in-flight, large payloads, deep object graphs, slow consumer backpressure
+- Transport edge cases: abrupt disconnect cleanup, server abort in-flight, large payloads, deep object graphs
+- Nightly stress profile: slow consumer backpressure
+- Curated multihop profile: real chained paths such as `go -> py -> ts -> rs`, `py -> ts -> rs -> zig`, `ts -> go -> py -> zig`, `rs -> zig -> go -> ts`, and `zig -> rs -> py -> go`
 
 Latest run:
 
@@ -139,6 +143,12 @@ Latest run:
 | **go**          | pass | pass | pass | pass | pass |
 | **rs**          | pass | pass | pass | pass | pass |
 | **zig**         | pass | pass | pass | pass | pass |
+
+Latest full release run: [`parity/results/20260326-175530/summary.json`](parity/results/20260326-175530/summary.json) (`600 ok, 0 failed`)
+
+Latest multihop run: [`parity/results/20260326-175716/summary.json`](parity/results/20260326-175716/summary.json) (`65 ok, 0 failed`)
+
+Latest stress run: [`parity/results/20260326-173159/summary.json`](parity/results/20260326-173159/summary.json) (`10 ok, 0 failed`)
 
 Full results and scenario definitions are in [`parity/`](parity/).
 

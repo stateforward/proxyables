@@ -4,19 +4,19 @@
     {
       "name": "GetScalars",
       "required": true,
-      "profiles": ["functional", "release"],
+      "profiles": ["functional", "release", "multihop"],
       "description": "Read canonical scalar properties from the remote root object."
     },
     {
       "name": "CallAdd",
       "required": true,
-      "profiles": ["functional", "release"],
+      "profiles": ["functional", "release", "multihop"],
       "description": "Invoke the canonical add method and verify the numeric result."
     },
     {
       "name": "NestedObjectAccess",
       "required": true,
-      "profiles": ["functional", "release"],
+      "profiles": ["functional", "release", "multihop"],
       "description": "Read nested object state and call a nested method."
     },
     {
@@ -28,37 +28,37 @@
     {
       "name": "CallbackRoundtrip",
       "required": true,
-      "profiles": ["functional", "release"],
+      "profiles": ["functional", "release", "multihop"],
       "description": "Pass a callback to the server and verify the callback result round-trips."
     },
     {
       "name": "ObjectArgumentRoundtrip",
       "required": true,
-      "profiles": ["functional", "release"],
+      "profiles": ["functional", "release", "multihop"],
       "description": "Pass an object with behavior to the server and verify the server can call back into it."
     },
     {
       "name": "ErrorPropagation",
       "required": true,
-      "profiles": ["functional", "release"],
+      "profiles": ["functional", "release", "multihop"],
       "description": "Trigger a remote error and verify the canonical Boom message."
     },
     {
       "name": "SharedReferenceConsistency",
       "required": true,
-      "profiles": ["functional", "release"],
+      "profiles": ["functional", "release", "multihop"],
       "description": "Fetch the shared remote object multiple times and verify stable behavior."
     },
     {
       "name": "ExplicitRelease",
       "required": true,
-      "profiles": ["functional", "release"],
+      "profiles": ["functional", "release", "multihop"],
       "description": "Verify explicit remote release semantics deterministically."
     },
     {
       "name": "AliasRetainRelease",
       "required": true,
-      "profiles": ["release"],
+      "profiles": ["release", "multihop"],
       "description": "Acquire the same shared reference twice, release aliases independently, and verify refcount semantics."
     },
     {
@@ -88,7 +88,7 @@
     {
       "name": "AutomaticReleaseAfterDrop",
       "required": true,
-      "profiles": ["release"],
+      "profiles": ["release", "multihop"],
       "gc_tier_a_only": true,
       "description": "Drop the last imported proxy, force GC, and verify eventual remote cleanup."
     },
@@ -105,6 +105,54 @@
       "profiles": ["release"],
       "gc_tier_a_only": true,
       "description": "Verify finalizer-driven cleanup completes within a bounded eventual window."
+    },
+    {
+      "name": "AbruptDisconnectCleanup",
+      "required": true,
+      "profiles": ["release", "multihop"],
+      "description": "Acquire remote references, drop the transport abruptly, and verify exporter cleanup through a fresh observer connection."
+    },
+    {
+      "name": "ServerAbortInFlight",
+      "required": true,
+      "profiles": ["release"],
+      "description": "Abort the server transport during an in-flight call and verify the client receives the canonical transport-closed error."
+    },
+    {
+      "name": "ConcurrentSharedReference",
+      "required": true,
+      "profiles": ["release"],
+      "description": "Use one imported remote reference from multiple concurrent calls and verify consistent results plus clean shutdown."
+    },
+    {
+      "name": "ConcurrentCallbackFanout",
+      "required": true,
+      "profiles": ["release"],
+      "description": "Run many callback round-trips in parallel and verify consistent behavior."
+    },
+    {
+      "name": "ReleaseUseRace",
+      "required": true,
+      "profiles": ["release"],
+      "description": "Race a remote use against transport teardown and verify either completion or a stable released/transport-closed outcome."
+    },
+    {
+      "name": "LargePayloadRoundtrip",
+      "required": true,
+      "profiles": ["release", "stress", "multihop"],
+      "description": "Round-trip a canonical large payload over the full transport and verify fidelity."
+    },
+    {
+      "name": "DeepObjectGraph",
+      "required": true,
+      "profiles": ["release", "multihop"],
+      "description": "Traverse a deep canonical object graph over the transport and verify the nested values."
+    },
+    {
+      "name": "SlowConsumerBackpressure",
+      "required": true,
+      "profiles": ["stress"],
+      "description": "Delay consumption of a large response and verify the transport does not deadlock or corrupt the payload."
     }
   ]
 }
