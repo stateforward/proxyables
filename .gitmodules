@@ -1,0 +1,15 @@
+[submodule "proxyables.go"]
+	path = proxyables.go
+	url = git@github.com:stateforward/proxyables.go.git
+[submodule "proxyables.py"]
+	path = proxyables.py
+	url = git@github.com:stateforward/proxyables.py.git
+[submodule "proxyables.rs"]
+	path = proxyables.rs
+	url = git@github.com:stateforward/proxyables.rs.git
+[submodule "proxyables.ts"]
+	path = proxyables.ts
+	url = git@github.com:stateforward/proxyables.ts.git
+[submodule "proxyables.zig"]
+	path = proxyables.zig
+	url = git@github.com:stateforward/proxyables.zig.git
