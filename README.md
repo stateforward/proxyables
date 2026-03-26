@@ -59,6 +59,25 @@ python3 parity/run.py
 - `--scenarios` limits matrix scenarios (from `parity/scenarios.json`).
 - `--allow-unsupported` marks unsupported pairs instead of failing the run.
 
+## Parity matrix results
+
+Latest captured run: `parity/results/20260325-234929` (`parity-json-v1`)
+
+- Total: `225` checks
+- Passed: `225`
+- Failed: `0`
+- Required scenarios: `225`
+
+| Client → Server | ts | py | go | rs | zig |
+|-----------------|----|----|----|----|-----|
+| ts              | ✅ | ✅ | ✅ | ✅ | ✅ |
+| py              | ✅ | ✅ | ✅ | ✅ | ✅ |
+| go              | ✅ | ✅ | ✅ | ✅ | ✅ |
+| rs              | ✅ | ✅ | ✅ | ✅ | ✅ |
+| zig             | ✅ | ✅ | ✅ | ✅ | ✅ |
+
+All supported scenarios are currently green.
+
 ## License
 
 Each language implementation maintains its own license. See the individual submodule directories for details.
