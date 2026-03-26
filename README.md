@@ -100,8 +100,8 @@ Language APIs map to this DSL as follows:
 
 | DSL step | TypeScript | Python | Go | Rust | Zig |
 |----------|------------|--------|----|------|-----|
-| Export root | `Proxyable.Export(...)` | `await Proxyable.Export(...)` | `proxyables.Export(...)` | `proxyables::Proxyable::Export(...)` | `proxyables.Proxyable.Export(...)` |
-| Import root | `Proxyable.ImportFrom(...)` | `await Proxyable.ImportFrom(...)` | `proxyables.ImportFrom(...)` | `proxyables::Proxyable::ImportFrom(...)` | `proxyables.Proxyable.ImportFrom(...)` |
+| Export root | `Proxyable.Export(...)` | `await Proxyable.Export(...)` | `proxyables.Export(...)` | `proxyables::Proxyable::Export(...)` | `proxyables.Export(...)` |
+| Import root | `Proxyable.ImportFrom(...)` | `await Proxyable.ImportFrom(...)` | `proxyables.ImportFrom(...)` | `proxyables::Proxyable::ImportFrom(...)` | `proxyables.ImportFrom(...)` |
 
 ### Go
 
@@ -138,13 +138,13 @@ const API = struct {
     pub fn compute(self: *@This(), a: i64, b: i64) i64 { return a + b; }
 };
 
-const exported = try proxyables.Proxyable.Export(.{ .allocator = allocator, .session = session, .root = api.proxyTarget() });
-const cursor = try proxyables.Proxyable.ImportFrom(.{ .allocator = allocator, .session = session });
+const exported = try proxyables.Export(.{ .allocator = allocator, .session = session, .root = api.proxyTarget() });
+const cursor = try proxyables.ImportFrom(.{ .allocator = allocator, .session = session });
 ```
 
 ## Parity matrix results
 
-Latest captured run: `parity/results/20260326-085311` (`parity-json-v1`)
+Latest captured run: `parity/results/20260326-085733` (`parity-json-v1`)
 
 - Total: `225` checks
 - Passed: `225`
