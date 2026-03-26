@@ -59,6 +59,8 @@ python3 parity/run.py
 - `--scenarios` limits matrix scenarios (from `parity/scenarios.json`).
 - `--allow-unsupported` marks unsupported pairs instead of failing the run.
 
+The parity harness is now full end-to-end transport parity: each client/server pair is exercised over the real Yamux + MessagePack path, not an in-process or fake transport mode.
+
 ## Small examples (all 5 languages)
 
 ### TypeScript
@@ -147,9 +149,9 @@ const cursor = try proxyables.ImportFrom(.{ .allocator = allocator, .session = s
 
 ## Parity matrix results
 
-Latest captured run: `parity/results/20260326-085934` (`parity-json-v1`)
+Latest captured run: `parity/results/20260326-114225` (`parity-json-v1`)
 
-- Total: `225` checks
+- Total: `225` checks (`5` languages × `25` client/server pairs × `9` scenarios)
 - Passed: `225`
 - Failed: `0`
 - Required scenarios: `225`
