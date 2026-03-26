@@ -109,8 +109,11 @@ Language APIs map to this DSL as follows:
 exported, _ := proxyables.Export(conn, &API{}, nil)
 proxy, _, _ := proxyables.ImportFrom(conn, nil)
 
-result, _ := proxy.Get("Echo").Apply("hello").Exec(ctx)
-_ = result // "echo hello"
+result := <-proxy.Get("Echo").Apply("hello").Await(ctx)
+if result.Error != nil {
+	panic(result.Error)
+}
+_ = result.Value // "echo hello"
 ```
 
 ### Rust
