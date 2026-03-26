@@ -144,7 +144,7 @@ const cursor = try proxyables.ImportFrom(.{ .allocator = allocator, .session = s
 
 ## Parity matrix results
 
-Latest captured run: `parity/results/20260326-085733` (`parity-json-v1`)
+Latest captured run: `parity/results/20260326-085934` (`parity-json-v1`)
 
 - Total: `225` checks
 - Passed: `225`
