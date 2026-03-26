@@ -10,14 +10,11 @@ Run the full matrix:
 python3 parity/run.py
 ```
 
-Run a subset:
+Run a subset (canonical `PascalCase` IDs, legacy aliases also accepted):
 
 ```bash
-python3 parity/run.py --langs ts,py,go --pairs ts:py,py:go --scenarios get_scalars,call_add
 python3 parity/run.py --langs ts,py,go --pairs ts:py,py:go --scenarios GetScalars,CallAdd
 ```
-
-`--scenarios` accepts the canonical `PascalCase` identifiers with legacy aliases (`snake_case` and `camelCase`) for compatibility.
 
 Keep unsupported pairs as informational instead of failing:
 
