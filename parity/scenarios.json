@@ -1,0 +1,50 @@
+{
+  "protocol_version": 1,
+  "scenarios": [
+    {
+      "name": "get_scalars",
+      "required": true,
+      "description": "Read canonical scalar properties from the remote root object."
+    },
+    {
+      "name": "call_add",
+      "required": true,
+      "description": "Invoke the canonical add method and verify the numeric result."
+    },
+    {
+      "name": "nested_object_access",
+      "required": true,
+      "description": "Read nested object state and call a nested method."
+    },
+    {
+      "name": "construct_greeter",
+      "required": true,
+      "description": "Construct the canonical Greeter target and call greet."
+    },
+    {
+      "name": "callback_roundtrip",
+      "required": true,
+      "description": "Pass a callback to the server and verify the callback result round-trips."
+    },
+    {
+      "name": "object_argument_roundtrip",
+      "required": true,
+      "description": "Pass an object with behavior to the server and verify the server can call back into it."
+    },
+    {
+      "name": "error_propagation",
+      "required": true,
+      "description": "Trigger a remote error and verify the canonical Boom message."
+    },
+    {
+      "name": "shared_reference_consistency",
+      "required": true,
+      "description": "Fetch the shared remote object multiple times and verify stable behavior."
+    },
+    {
+      "name": "explicit_release",
+      "required": true,
+      "description": "Verify explicit remote release semantics deterministically."
+    }
+  ]
+}
