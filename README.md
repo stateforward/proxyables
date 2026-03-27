@@ -181,6 +181,20 @@ Latest captured benchmark report: [`bench/results/20260326-185624/report.html`](
 
 That run covered all 25 direct pairs across 10 benchmark scenarios and finished `250 ok, 0 failed`.
 
+Representative average latency across the 10 benchmark scenarios from that run:
+
+| Pair | Avg latency |
+|------|-------------|
+| `rs -> rs` | `0.1777 ms` |
+| `ts -> rs` | `0.1872 ms` |
+| `go -> rs` | `0.2874 ms` |
+| `py -> py` | `0.5873 ms` |
+| `ts -> ts` | `0.6219 ms` |
+| `zig -> zig` | `0.6435 ms` |
+| `go -> go` | `1.2976 ms` |
+
+Fastest direct pair in the captured run was `rs -> rs`. Slowest direct pair was `zig -> go` at `1.8198 ms` average across the same 10-scenario set.
+
 ## Repository structure
 
 ```
