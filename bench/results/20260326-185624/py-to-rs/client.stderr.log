@@ -1,0 +1,160 @@
+Task exception was never retrieved
+future: <Task finished name='Task-33' coro=<Stream.close() done, defined at /Users/gabrielwillen/VSCode/stateforward/proxyables/proxyables/proxyables.py/proxyables/yamux/stream.py:39> exception=ConnectionResetError('Connection lost')>
+Traceback (most recent call last):
+  File "/Users/gabrielwillen/VSCode/stateforward/proxyables/proxyables/proxyables.py/proxyables/yamux/stream.py", line 44, in close
+    await self.session.write_frame(
+    ...<3 lines>...
+    )
+  File "/Users/gabrielwillen/VSCode/stateforward/proxyables/proxyables/proxyables.py/proxyables/yamux/session.py", line 119, in write_frame
+    await self.stream.write(data)
+  File "/Users/gabrielwillen/VSCode/stateforward/proxyables/proxyables/proxyables.py/proxyables/transport.py", line 30, in write
+    await self.writer.drain()
+  File "/opt/homebrew/Cellar/python@3.14/3.14.3_1/Frameworks/Python.framework/Versions/3.14/lib/python3.14/asyncio/streams.py", line 386, in drain
+    await self._protocol._drain_helper()
+  File "/opt/homebrew/Cellar/python@3.14/3.14.3_1/Frameworks/Python.framework/Versions/3.14/lib/python3.14/asyncio/streams.py", line 166, in _drain_helper
+    raise ConnectionResetError('Connection lost')
+ConnectionResetError: Connection lost
+Task exception was never retrieved
+future: <Task finished name='Task-65' coro=<Stream.close() done, defined at /Users/gabrielwillen/VSCode/stateforward/proxyables/proxyables/proxyables.py/proxyables/yamux/stream.py:39> exception=ConnectionResetError('Connection lost')>
+Traceback (most recent call last):
+  File "/Users/gabrielwillen/VSCode/stateforward/proxyables/proxyables/proxyables.py/proxyables/yamux/stream.py", line 44, in close
+    await self.session.write_frame(
+    ...<3 lines>...
+    )
+  File "/Users/gabrielwillen/VSCode/stateforward/proxyables/proxyables/proxyables.py/proxyables/yamux/session.py", line 119, in write_frame
+    await self.stream.write(data)
+  File "/Users/gabrielwillen/VSCode/stateforward/proxyables/proxyables/proxyables.py/proxyables/transport.py", line 30, in write
+    await self.writer.drain()
+  File "/opt/homebrew/Cellar/python@3.14/3.14.3_1/Frameworks/Python.framework/Versions/3.14/lib/python3.14/asyncio/streams.py", line 386, in drain
+    await self._protocol._drain_helper()
+  File "/opt/homebrew/Cellar/python@3.14/3.14.3_1/Frameworks/Python.framework/Versions/3.14/lib/python3.14/asyncio/streams.py", line 166, in _drain_helper
+    raise ConnectionResetError('Connection lost')
+ConnectionResetError: Connection lost
+Task exception was never retrieved
+future: <Task finished name='Task-97' coro=<Stream.close() done, defined at /Users/gabrielwillen/VSCode/stateforward/proxyables/proxyables/proxyables.py/proxyables/yamux/stream.py:39> exception=ConnectionResetError('Connection lost')>
+Traceback (most recent call last):
+  File "/Users/gabrielwillen/VSCode/stateforward/proxyables/proxyables/proxyables.py/proxyables/yamux/stream.py", line 44, in close
+    await self.session.write_frame(
+    ...<3 lines>...
+    )
+  File "/Users/gabrielwillen/VSCode/stateforward/proxyables/proxyables/proxyables.py/proxyables/yamux/session.py", line 119, in write_frame
+    await self.stream.write(data)
+  File "/Users/gabrielwillen/VSCode/stateforward/proxyables/proxyables/proxyables.py/proxyables/transport.py", line 30, in write
+    await self.writer.drain()
+  File "/opt/homebrew/Cellar/python@3.14/3.14.3_1/Frameworks/Python.framework/Versions/3.14/lib/python3.14/asyncio/streams.py", line 386, in drain
+    await self._protocol._drain_helper()
+  File "/opt/homebrew/Cellar/python@3.14/3.14.3_1/Frameworks/Python.framework/Versions/3.14/lib/python3.14/asyncio/streams.py", line 166, in _drain_helper
+    raise ConnectionResetError('Connection lost')
+ConnectionResetError: Connection lost
+Task exception was never retrieved
+future: <Task finished name='Task-129' coro=<Stream.close() done, defined at /Users/gabrielwillen/VSCode/stateforward/proxyables/proxyables/proxyables.py/proxyables/yamux/stream.py:39> exception=ConnectionResetError('Connection lost')>
+Traceback (most recent call last):
+  File "/Users/gabrielwillen/VSCode/stateforward/proxyables/proxyables/proxyables.py/proxyables/yamux/stream.py", line 44, in close
+    await self.session.write_frame(
+    ...<3 lines>...
+    )
+  File "/Users/gabrielwillen/VSCode/stateforward/proxyables/proxyables/proxyables.py/proxyables/yamux/session.py", line 119, in write_frame
+    await self.stream.write(data)
+  File "/Users/gabrielwillen/VSCode/stateforward/proxyables/proxyables/proxyables.py/proxyables/transport.py", line 30, in write
+    await self.writer.drain()
+  File "/opt/homebrew/Cellar/python@3.14/3.14.3_1/Frameworks/Python.framework/Versions/3.14/lib/python3.14/asyncio/streams.py", line 386, in drain
+    await self._protocol._drain_helper()
+  File "/opt/homebrew/Cellar/python@3.14/3.14.3_1/Frameworks/Python.framework/Versions/3.14/lib/python3.14/asyncio/streams.py", line 166, in _drain_helper
+    raise ConnectionResetError('Connection lost')
+ConnectionResetError: Connection lost
+Task exception was never retrieved
+future: <Task finished name='Task-161' coro=<Stream.close() done, defined at /Users/gabrielwillen/VSCode/stateforward/proxyables/proxyables/proxyables.py/proxyables/yamux/stream.py:39> exception=ConnectionResetError('Connection lost')>
+Traceback (most recent call last):
+  File "/Users/gabrielwillen/VSCode/stateforward/proxyables/proxyables/proxyables.py/proxyables/yamux/stream.py", line 44, in close
+    await self.session.write_frame(
+    ...<3 lines>...
+    )
+  File "/Users/gabrielwillen/VSCode/stateforward/proxyables/proxyables/proxyables.py/proxyables/yamux/session.py", line 119, in write_frame
+    await self.stream.write(data)
+  File "/Users/gabrielwillen/VSCode/stateforward/proxyables/proxyables/proxyables.py/proxyables/transport.py", line 30, in write
+    await self.writer.drain()
+  File "/opt/homebrew/Cellar/python@3.14/3.14.3_1/Frameworks/Python.framework/Versions/3.14/lib/python3.14/asyncio/streams.py", line 386, in drain
+    await self._protocol._drain_helper()
+  File "/opt/homebrew/Cellar/python@3.14/3.14.3_1/Frameworks/Python.framework/Versions/3.14/lib/python3.14/asyncio/streams.py", line 166, in _drain_helper
+    raise ConnectionResetError('Connection lost')
+ConnectionResetError: Connection lost
+Task exception was never retrieved
+future: <Task finished name='Task-193' coro=<Stream.close() done, defined at /Users/gabrielwillen/VSCode/stateforward/proxyables/proxyables/proxyables.py/proxyables/yamux/stream.py:39> exception=ConnectionResetError('Connection lost')>
+Traceback (most recent call last):
+  File "/Users/gabrielwillen/VSCode/stateforward/proxyables/proxyables/proxyables.py/proxyables/yamux/stream.py", line 44, in close
+    await self.session.write_frame(
+    ...<3 lines>...
+    )
+  File "/Users/gabrielwillen/VSCode/stateforward/proxyables/proxyables/proxyables.py/proxyables/yamux/session.py", line 119, in write_frame
+    await self.stream.write(data)
+  File "/Users/gabrielwillen/VSCode/stateforward/proxyables/proxyables/proxyables.py/proxyables/transport.py", line 30, in write
+    await self.writer.drain()
+  File "/opt/homebrew/Cellar/python@3.14/3.14.3_1/Frameworks/Python.framework/Versions/3.14/lib/python3.14/asyncio/streams.py", line 386, in drain
+    await self._protocol._drain_helper()
+  File "/opt/homebrew/Cellar/python@3.14/3.14.3_1/Frameworks/Python.framework/Versions/3.14/lib/python3.14/asyncio/streams.py", line 166, in _drain_helper
+    raise ConnectionResetError('Connection lost')
+ConnectionResetError: Connection lost
+Task exception was never retrieved
+future: <Task finished name='Task-225' coro=<Stream.close() done, defined at /Users/gabrielwillen/VSCode/stateforward/proxyables/proxyables/proxyables.py/proxyables/yamux/stream.py:39> exception=ConnectionResetError('Connection lost')>
+Traceback (most recent call last):
+  File "/Users/gabrielwillen/VSCode/stateforward/proxyables/proxyables/proxyables.py/proxyables/yamux/stream.py", line 44, in close
+    await self.session.write_frame(
+    ...<3 lines>...
+    )
+  File "/Users/gabrielwillen/VSCode/stateforward/proxyables/proxyables/proxyables.py/proxyables/yamux/session.py", line 119, in write_frame
+    await self.stream.write(data)
+  File "/Users/gabrielwillen/VSCode/stateforward/proxyables/proxyables/proxyables.py/proxyables/transport.py", line 30, in write
+    await self.writer.drain()
+  File "/opt/homebrew/Cellar/python@3.14/3.14.3_1/Frameworks/Python.framework/Versions/3.14/lib/python3.14/asyncio/streams.py", line 386, in drain
+    await self._protocol._drain_helper()
+  File "/opt/homebrew/Cellar/python@3.14/3.14.3_1/Frameworks/Python.framework/Versions/3.14/lib/python3.14/asyncio/streams.py", line 166, in _drain_helper
+    raise ConnectionResetError('Connection lost')
+ConnectionResetError: Connection lost
+Task exception was never retrieved
+future: <Task finished name='Task-257' coro=<Stream.close() done, defined at /Users/gabrielwillen/VSCode/stateforward/proxyables/proxyables/proxyables.py/proxyables/yamux/stream.py:39> exception=ConnectionResetError('Connection lost')>
+Traceback (most recent call last):
+  File "/Users/gabrielwillen/VSCode/stateforward/proxyables/proxyables/proxyables.py/proxyables/yamux/stream.py", line 44, in close
+    await self.session.write_frame(
+    ...<3 lines>...
+    )
+  File "/Users/gabrielwillen/VSCode/stateforward/proxyables/proxyables/proxyables.py/proxyables/yamux/session.py", line 119, in write_frame
+    await self.stream.write(data)
+  File "/Users/gabrielwillen/VSCode/stateforward/proxyables/proxyables/proxyables.py/proxyables/transport.py", line 30, in write
+    await self.writer.drain()
+  File "/opt/homebrew/Cellar/python@3.14/3.14.3_1/Frameworks/Python.framework/Versions/3.14/lib/python3.14/asyncio/streams.py", line 386, in drain
+    await self._protocol._drain_helper()
+  File "/opt/homebrew/Cellar/python@3.14/3.14.3_1/Frameworks/Python.framework/Versions/3.14/lib/python3.14/asyncio/streams.py", line 166, in _drain_helper
+    raise ConnectionResetError('Connection lost')
+ConnectionResetError: Connection lost
+Task exception was never retrieved
+future: <Task finished name='Task-289' coro=<Stream.close() done, defined at /Users/gabrielwillen/VSCode/stateforward/proxyables/proxyables/proxyables.py/proxyables/yamux/stream.py:39> exception=ConnectionResetError('Connection lost')>
+Traceback (most recent call last):
+  File "/Users/gabrielwillen/VSCode/stateforward/proxyables/proxyables/proxyables.py/proxyables/yamux/stream.py", line 44, in close
+    await self.session.write_frame(
+    ...<3 lines>...
+    )
+  File "/Users/gabrielwillen/VSCode/stateforward/proxyables/proxyables/proxyables.py/proxyables/yamux/session.py", line 119, in write_frame
+    await self.stream.write(data)
+  File "/Users/gabrielwillen/VSCode/stateforward/proxyables/proxyables/proxyables.py/proxyables/transport.py", line 30, in write
+    await self.writer.drain()
+  File "/opt/homebrew/Cellar/python@3.14/3.14.3_1/Frameworks/Python.framework/Versions/3.14/lib/python3.14/asyncio/streams.py", line 386, in drain
+    await self._protocol._drain_helper()
+  File "/opt/homebrew/Cellar/python@3.14/3.14.3_1/Frameworks/Python.framework/Versions/3.14/lib/python3.14/asyncio/streams.py", line 166, in _drain_helper
+    raise ConnectionResetError('Connection lost')
+ConnectionResetError: Connection lost
+Task exception was never retrieved
+future: <Task finished name='Task-321' coro=<Stream.close() done, defined at /Users/gabrielwillen/VSCode/stateforward/proxyables/proxyables/proxyables.py/proxyables/yamux/stream.py:39> exception=ConnectionResetError('Connection lost')>
+Traceback (most recent call last):
+  File "/Users/gabrielwillen/VSCode/stateforward/proxyables/proxyables/proxyables.py/proxyables/yamux/stream.py", line 44, in close
+    await self.session.write_frame(
+    ...<3 lines>...
+    )
+  File "/Users/gabrielwillen/VSCode/stateforward/proxyables/proxyables/proxyables.py/proxyables/yamux/session.py", line 119, in write_frame
+    await self.stream.write(data)
+  File "/Users/gabrielwillen/VSCode/stateforward/proxyables/proxyables/proxyables.py/proxyables/transport.py", line 30, in write
+    await self.writer.drain()
+  File "/opt/homebrew/Cellar/python@3.14/3.14.3_1/Frameworks/Python.framework/Versions/3.14/lib/python3.14/asyncio/streams.py", line 386, in drain
+    await self._protocol._drain_helper()
+  File "/opt/homebrew/Cellar/python@3.14/3.14.3_1/Frameworks/Python.framework/Versions/3.14/lib/python3.14/asyncio/streams.py", line 166, in _drain_helper
+    raise ConnectionResetError('Connection lost')
+ConnectionResetError: Connection lost

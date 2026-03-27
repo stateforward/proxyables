@@ -1,0 +1,45 @@
+{
+  "version": 1,
+  "scenarios": [
+    {
+      "name": "GetScalars",
+      "description": "Read the canonical scalar object payload."
+    },
+    {
+      "name": "CallAdd",
+      "description": "Invoke the canonical small numeric method call."
+    },
+    {
+      "name": "NestedObjectAccess",
+      "description": "Traverse a nested object and materialize the nested values."
+    },
+    {
+      "name": "ConstructGreeter",
+      "description": "Construct the canonical remote object and call greet."
+    },
+    {
+      "name": "CallbackRoundtrip",
+      "description": "Round-trip a callback through the remote side."
+    },
+    {
+      "name": "ObjectArgumentRoundtrip",
+      "description": "Pass an object argument with behavior and materialize the reply."
+    },
+    {
+      "name": "SharedReferenceConsistency",
+      "description": "Touch a stable shared remote reference."
+    },
+    {
+      "name": "ExplicitRelease",
+      "description": "Acquire and release explicit remote references."
+    },
+    {
+      "name": "LargePayloadRoundtrip",
+      "description": "Transfer a large canonical payload over the full transport."
+    },
+    {
+      "name": "DeepObjectGraph",
+      "description": "Traverse the canonical deep object graph."
+    }
+  ]
+}

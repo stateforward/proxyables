@@ -108,6 +108,20 @@ python3 parity/run.py --profile stress          # stress profile (payload/backpr
 python3 parity/run.py --langs ts,py --pairs ts:py,py:ts  # specific pairs
 ```
 
+To benchmark the full direct matrix and generate a standalone HTML report:
+
+```sh
+python3 bench/run.py
+open bench/results/<timestamp>/report.html
+```
+
+You can scope the run the same way as parity:
+
+```sh
+python3 bench/run.py --pairs ts:py,py:go --iterations 250 --warmup 25
+python3 bench/run.py --scenarios CallAdd,LargePayloadRoundtrip
+```
+
 ## How it works
 
 Every language implementation shares three layers:
@@ -152,11 +166,27 @@ Latest stress run: [`parity/results/20260326-173159/summary.json`](parity/result
 
 Full results and scenario definitions are in [`parity/`](parity/).
 
+## Benchmark matrix
+
+The repo also includes a benchmark harness that mirrors the direct parity topology, but records latency and throughput instead of only correctness. It runs the real client and real server implementations against each other across all 25 direct language pairs and writes:
+
+- `bench/results/<timestamp>/summary.json`
+- `bench/results/<timestamp>/report.html`
+
+The HTML report is self-contained and can be opened directly from disk. No HTTP server is needed.
+
+Latest captured benchmark run: [`bench/results/20260326-185624/summary.json`](bench/results/20260326-185624/summary.json)
+
+Latest captured benchmark report: [`bench/results/20260326-185624/report.html`](bench/results/20260326-185624/report.html)
+
+That run covered all 25 direct pairs across 10 benchmark scenarios and finished `250 ok, 0 failed`.
+
 ## Repository structure
 
 ```
 proxyables/
 ├── DSL.md             # Wire protocol contract (instruction kinds, value types, reference lifecycle)
+├── bench/             # Cross-language benchmark harness and standalone HTML reports
 ├── parity/            # Cross-language test harness and scenario definitions
 ├── proxyables.ts/     # TypeScript — npm package
 ├── proxyables.py/     # Python — pip package

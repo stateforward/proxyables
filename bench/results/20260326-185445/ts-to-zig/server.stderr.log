@@ -1,0 +1,4 @@
+parity_agent.zig:1222:13: error: local variable is never mutated
+        var ordered = try allocator.alloc(f64, samples.len);
+            ^~~~~~~
+parity_agent.zig:1222:13: note: consider using 'const'
