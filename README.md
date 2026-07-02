@@ -9,9 +9,10 @@ Proxyables is a cross-language object RPC system. Instead of designing endpoints
 exported = await Proxyable.Export(Calculator(), stream)
 ```
 
+<!-- TypeScript import example matching proxyables.ts public transport API -->
 ```typescript
 // TypeScript process — use it like it's right here
-const calc = Proxyable.ImportFrom({ stream });
+const calc = Proxyable.ImportFrom({ transport });
 await calc.add(2, 3);                        // calls Python, returns 5
 await calc.history[0];                        // reads a nested property
 const session = await new calc.Session();     // constructs a remote instance
