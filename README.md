@@ -62,7 +62,7 @@ Every implementation uses the same instruction vocabulary, value types, and refe
 | Language | Install | Proxy Style |
 |----------|---------|-------------|
 | [TypeScript](proxyables.ts/) | `npm install @stateforward/proxyables.ts` | `await proxy.method()` — native `Proxy` interception |
-| [Python](proxyables.py/) | `pip install proxyables` | `await proxy.method()` — `__getattr__` magic |
+| [Python](proxyables.py/) | `pip install stateforward.proxyables` | `await proxy.method()` — `__getattr__` magic |
 | [Go](proxyables.go/) | `go get github.com/stateforward/proxyables.go` | `proxy.Get("Method").Apply(args).Await(ctx)` — cursor chaining |
 | [Rust](proxyables.rs/) | `proxyables = { git = "..." }` | `proxy.method().await` — macro-generated type-safe proxies |
 | [Zig](proxyables.zig/) | git submodule | `cursor.Get("method").Apply(args)` — vtable dispatch |
